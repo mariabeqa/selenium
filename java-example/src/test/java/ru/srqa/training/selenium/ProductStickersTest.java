@@ -19,7 +19,7 @@ public class ProductStickersTest extends TestBase {
 
     public boolean checkEachProductHaveOneSticker() {
         boolean stickerIsPresent = true;
-        List<WebElement> productList = driver.findElements(By.cssSelector("li.product.column.shadow.hover-light "));
+        List<WebElement> productList = driver.findElements(By.cssSelector("li.product"));
 
         for (WebElement product : productList) {
 
