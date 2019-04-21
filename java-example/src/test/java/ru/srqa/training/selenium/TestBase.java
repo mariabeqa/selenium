@@ -7,7 +7,10 @@ import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import util.PropertyLoader;
+
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
@@ -52,5 +55,13 @@ public class TestBase {
 
     public boolean areElementsPresent(WebDriver driver, By locator) {
         return driver.findElements(locator).size() > 0;
+    }
+
+    public void loginToAdminPanel(String user, String pw) {
+        driver.get(PropertyLoader.loadProperty("login.adminpage.url"));
+        driver.findElement(By.name("username")).sendKeys(user);
+        driver.findElement(By.name("password")).sendKeys(pw);
+        driver.findElement(By.name("login")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.logotype a img")));
     }
 }
