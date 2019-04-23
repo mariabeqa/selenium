@@ -19,6 +19,7 @@ public class SortingTest extends TestBase {
         driver.findElement(By.xpath("//li[@id='app-']//span[contains(text(),'Countries')]")).click();
 
         Assert.assertTrue(checkCountriesAreSorted());
+        Assert.assertTrue(checkGeoZonesAreSortedWithinACountry());
     }
 
     @Test
@@ -39,6 +40,32 @@ public class SortingTest extends TestBase {
         }
 
         return countriesNames.stream().sorted().collect(Collectors.toList()).equals(countriesNames);
+    }
+
+    private boolean checkGeoZonesAreSortedWithinACountry() {
+        boolean zonesAreSorted = true;
+
+        List<WebElement> amountOfZonesPerCountry = driver.findElements(By.cssSelector("tr.row td:nth-child(6)"));
+
+        for (int i = 1; i < amountOfZonesPerCountry.size() + 1; i++) {
+            String amount = driver.findElement(By.xpath("(//tr[@class='row']/td[6])[" + i + "]")).getText();
+            if (Integer.valueOf(amount) > 0) {
+                driver.findElement(By.xpath("(//tr[@class='row']/td[5]/a)[" + i + "]")).click();
+                List<WebElement> zones = driver.findElements(By.cssSelector("table#table-zones td:nth-child(3) input[type='hidden']"));
+
+                List<String> zoneNames = new ArrayList<>();
+                for (WebElement zone : zones) {
+                    String name = zone.getAttribute("value");
+                    zoneNames.add(name);
+                    if (!zoneNames.stream().sorted().collect(Collectors.toList()).equals(zoneNames)) {
+                        zonesAreSorted = false;
+                        break;
+                    }
+                }
+                driver.navigate().back();
+            }
+        }
+        return zonesAreSorted;
     }
 
     private boolean checkGeozonesAreSorted() {
