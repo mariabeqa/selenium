@@ -1,5 +1,6 @@
 package ru.srqa.training.selenium;
 
+import com.google.common.io.Files;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.*;
@@ -13,6 +14,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.srqa.training.selenium.model.UserData;
 import util.PropertyLoader;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
@@ -30,6 +32,14 @@ public class TestBase {
         @Override
         public void onException(Throwable throwable, WebDriver driver) {
             System.out.println(throwable);
+            File tmp = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+            File screen = new File("screen" + System.currentTimeMillis() + ".png");
+            try {
+                Files.copy(tmp, screen);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println(screen);
         }
 
         @Override
