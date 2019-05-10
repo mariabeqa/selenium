@@ -2,12 +2,11 @@ package ru.srqa.training.selenium;
 
 import org.junit.After;
 import org.junit.Before;
-import org.openqa.selenium.By;
-import org.openqa.selenium.InvalidSelectorException;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -19,15 +18,32 @@ import java.util.NoSuchElementException;
 
 
 public class TestBase {
-    protected WebDriver driver;
+    protected EventFiringWebDriver driver;
     protected WebDriverWait wait;
+
+    public static class myListener extends AbstractWebDriverEventListener {
+        @Override
+        public void beforeFindBy(By by, WebElement element, WebDriver driver) {
+            System.out.println(by);
+        }
+
+        @Override
+        public void onException(Throwable throwable, WebDriver driver) {
+            System.out.println(throwable);
+        }
+
+        @Override
+        public void afterFindBy(By by, WebElement element, WebDriver driver) {
+            System.out.println(by + " found");
+        }
+    }
 
     @Before
     public void start() throws IOException {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--start-fullscreen");
-        driver = new ChromeDriver(chromeOptions);
-
+        driver = new EventFiringWebDriver(new ChromeDriver(chromeOptions));
+        driver.register(new myListener());
 //        driver = new SafariDriver();
 
 //        driver = new FirefoxDriver();
