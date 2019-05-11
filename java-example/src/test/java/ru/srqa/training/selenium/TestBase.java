@@ -1,6 +1,9 @@
 package ru.srqa.training.selenium;
 
 import com.google.common.io.Files;
+import net.lightbody.bmp.BrowserMobProxy;
+import net.lightbody.bmp.BrowserMobProxyServer;
+import net.lightbody.bmp.client.ClientUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.*;
@@ -26,6 +29,7 @@ import java.util.logging.Level;
 public class TestBase {
     protected EventFiringWebDriver driver;
     protected WebDriverWait wait;
+    public BrowserMobProxy proxy;
 
     public static class myListener extends AbstractWebDriverEventListener {
         @Override
@@ -59,8 +63,13 @@ public class TestBase {
 
         LoggingPreferences logPrefs = new LoggingPreferences();
         logPrefs.enable(LogType.BROWSER, Level.ALL);
-        chromeOptions.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
 
+        proxy = new BrowserMobProxyServer();
+        proxy.start(0);
+        Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
+
+        chromeOptions.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
+        chromeOptions.setCapability(CapabilityType.PROXY, seleniumProxy);
         driver = new EventFiringWebDriver(new ChromeDriver(chromeOptions));
         driver.register(new myListener());
 //        driver = new SafariDriver();

@@ -1,5 +1,6 @@
 package ru.srqa.training.selenium;
 
+import net.lightbody.bmp.core.har.Har;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -13,12 +14,15 @@ public class CartActionsTest extends TestBase {
 
     @Test
     public void testAddingProductToCart() {
+        proxy.newHar();
         driver.get(PropertyLoader.loadProperty("mainpage.url"));
 
         addProductsToCart(AMOUNT_OF_PRODUCTS_TO_ADD);
         Assert.assertEquals(AMOUNT_OF_PRODUCTS_TO_ADD, getAmountOfProductsInCart());
         removeProductsFromCart(AMOUNT_OF_PRODUCTS_TO_REMOVE);
         Assert.assertEquals(AMOUNT_OF_PRODUCTS_TO_ADD - AMOUNT_OF_PRODUCTS_TO_REMOVE, getAmountOfProductsInCart());
+        Har har = proxy.endHar();
+        har.getLog().getEntries().forEach(l-> System.out.println(l.getResponse().getStatus() + ": " + l.getRequest().getUrl()));
     }
 
     public void addProductsToCart(int amount) {
