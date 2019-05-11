@@ -6,6 +6,9 @@ import org.junit.Before;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -17,6 +20,7 @@ import util.PropertyLoader;
 import java.io.File;
 import java.io.IOException;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
 
 
 public class TestBase {
@@ -52,6 +56,11 @@ public class TestBase {
     public void start() throws IOException {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--start-fullscreen");
+
+        LoggingPreferences logPrefs = new LoggingPreferences();
+        logPrefs.enable(LogType.BROWSER, Level.ALL);
+        chromeOptions.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
+
         driver = new EventFiringWebDriver(new ChromeDriver(chromeOptions));
         driver.register(new myListener());
 //        driver = new SafariDriver();
