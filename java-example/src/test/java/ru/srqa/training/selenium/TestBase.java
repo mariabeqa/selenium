@@ -2,8 +2,6 @@ package ru.srqa.training.selenium;
 
 import com.google.common.io.Files;
 import net.lightbody.bmp.BrowserMobProxy;
-import net.lightbody.bmp.BrowserMobProxyServer;
-import net.lightbody.bmp.client.ClientUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.*;
@@ -30,6 +28,7 @@ public class TestBase {
     protected EventFiringWebDriver driver;
     protected WebDriverWait wait;
     public BrowserMobProxy proxy;
+    public Proxy proxyCharles;
 
     public static class myListener extends AbstractWebDriverEventListener {
         @Override
@@ -61,15 +60,18 @@ public class TestBase {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--start-fullscreen");
 
+//        proxyCharles = new Proxy();
+//        proxyCharles.setHttpProxy("127.0.0.1:8888");
+
         LoggingPreferences logPrefs = new LoggingPreferences();
         logPrefs.enable(LogType.BROWSER, Level.ALL);
 
-        proxy = new BrowserMobProxyServer();
-        proxy.start(0);
-        Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
+//        proxy = new BrowserMobProxyServer();
+//        proxy.start(0);
+//        Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
 
         chromeOptions.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
-        chromeOptions.setCapability(CapabilityType.PROXY, seleniumProxy);
+        chromeOptions.setCapability(CapabilityType.PROXY, proxyCharles);
         driver = new EventFiringWebDriver(new ChromeDriver(chromeOptions));
         driver.register(new myListener());
 //        driver = new SafariDriver();
